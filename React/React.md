@@ -762,7 +762,7 @@ let value = temp;
 
 ### Redux流程图
 
-![ReduxFlow](..\React学习总结\ReduxFlow.gif)
+![ReduxFlow](..\React\ReduxFlow.gif)
 
 ### Redux基本概念以及API
 
@@ -1500,7 +1500,7 @@ function fetchData(someValue) {
 
 #### 4、Redux异步数据流程图
 
-![ReduxAsyncDataFlowDiagram](..\React学习总结\ReduxAsyncDataFlowDiagram.gif)
+![ReduxAsyncDataFlowDiagram](..\React\ReduxAsyncDataFlowDiagram.gif)
 
 
 
@@ -2114,3 +2114,9 @@ require(['cytoscape'], function(cytoscape){
 - [concentric](https://js.cytoscape.org/#layouts/concentric)
 - core
 - ...
+
+## 附加
+
+road map
+
+![roadmap](..\React\roadmap.png)
