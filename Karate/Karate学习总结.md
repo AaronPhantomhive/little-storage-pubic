@@ -4,6 +4,8 @@
 
 ## 语法
 
+![karateAPI](karateAPI.jpg)
+
 ### Feature
 
 ```

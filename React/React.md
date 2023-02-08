@@ -762,7 +762,7 @@ let value = temp;
 
 ### Redux流程图
 
-![ReduxFlow](..\React\ReduxFlow.gif)
+![ReduxFlow](ReduxFlow.gif)
 
 ### Redux基本概念以及API
 
@@ -1500,7 +1500,7 @@ function fetchData(someValue) {
 
 #### 4、Redux异步数据流程图
 
-![ReduxAsyncDataFlowDiagram](..\React\ReduxAsyncDataFlowDiagram.gif)
+![ReduxAsyncDataFlowDiagram](ReduxAsyncDataFlowDiagram.gif)
 
 
 
