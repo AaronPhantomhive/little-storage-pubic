@@ -44,7 +44,7 @@ def为定义(变量)，可以接受json, xml等数据源
 """
 
 Given url baseUrl + '...'
-# And request接json
+# And request接json，为body
 And request sampleJson
 When method post
 Then status 200
