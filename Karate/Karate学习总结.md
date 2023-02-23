@@ -25,6 +25,51 @@ create and retrieve a cat
 
 为Feature里每一个具体的scenario
 
+
+
+### 模板
+
+```cucumber
+@baseChat @ @
+Feature: [/]
+  scenario：
+  ・xxxxxxxxxxxxxxx。
+  
+  Background:
+    * configure headers = auth
+    
+  Scenario: xxxxxxxxxxxx。
+
+    * print "(1) xxxxxxxx。"
+
+    * def requestJson =
+      """
+        {
+          "" : ""
+        }
+      """
+      
+    Given url baseUrl + '' + 
+    And request requestJson
+    When method post
+    Then status 200
+    And match response.key contains '#present'
+    
+@ignore @report=false @parts=get
+Scenario: xxxxxxxx。
+
+  * def requestJsonData =
+    """
+      {
+        "": ""
+      }
+    """
+    
+  Given url baseUrl + '//' + __arg.key + '/'
+  And request requestJsonData
+  When method get
+```
+
  
 
 ## Setting and Using Variables
