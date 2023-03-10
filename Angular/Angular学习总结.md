@@ -14,7 +14,7 @@ ag-grid网格框架：https://www.ag-grid.com/angular-data-grid/
 
 Angular CLI 工具包 + Node.js（类似java的JDK）
 
-安装angular CLI: npm install -g @angular/cli (加版本的话后面+@x.x←版本号)
+安装angular CLI: `npm install -g @angular/cli` (加版本的话后面+@x.x←版本号)
 
 查看版本：ng --version
 
@@ -39,6 +39,8 @@ serve: ng serve
 **package.json** 装的包（很重要）唯一支持外部交互的文件
 
 **package-lock.json** 版本
+
+**.gitignore git** 忽略文件
 
 ### 启动服务
 
