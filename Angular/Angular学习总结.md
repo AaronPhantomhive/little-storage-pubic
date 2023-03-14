@@ -92,7 +92,7 @@ pipe：管道
 
 - 对字符串做一些特定的处理，一般用来改变内容的格式
 - 给数据增加表现形式
-- （差值表达式）{{xxx|json}} {{xxx|async}} 自带管道，转json和等待
+- （差值表达式）{{xxx|json}} {{xxx|async}} 自带管道，转json和等待。
 
 directive：指令
 
