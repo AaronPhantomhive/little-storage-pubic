@@ -14,7 +14,7 @@ ag-grid网格框架：https://www.ag-grid.com/angular-data-grid/
 
 Angular CLI 工具包 + Node.js（类似java的JDK）
 
-安装angular CLI: `npm install -g @angular/cli` (加版本的话后面+@x.x←版本号)
+安装angular CLI: `npm i @angular/cli -g` (加版本的话后面+@x.x←版本号)
 
 查看版本：ng --version
 
@@ -41,6 +41,43 @@ serve: ng serve
 **package-lock.json** 版本
 
 **.gitignore git** 忽略文件
+
+### 使用ESLint和Prettier配置Angular项目
+
+ESLint:
+
+```
+ng add @angular-eslint/schematics
+```
+
+Prettier:
+
+```
+npm install prettier --save-dev
+```
+
+之后创建一个 `.prettierrc.json` 文件并写入一些常见的配置。
+
+再创建`prettierignore` 文件，把 `gitignore` 文件的内容复制过去。
+
+**将ESLint和Prettier结合**
+
+```text
+npm install --save-dev eslint-config-prettier
+npm install --save-dev eslint-plugin-prettier 
+```
+
+之后把 `plugin:prettier/recommended` 添加在 `.eslintrc.json` 中 extends 数组的最后。
+
+```text
+{
+  "extends": ["plugin:prettier/recommended"]
+}
+```
+
+再运行 `ng lint --fix` ，Prettier 的规则也会被执行并且自动 fix。
+
+参考：https://zhuanlan.zhihu.com/p/472919853
 
 ### 启动服务
 
