@@ -14,7 +14,7 @@ ag-grid网格框架：https://www.ag-grid.com/angular-data-grid/
 
 Angular CLI 工具包 + Node.js（类似java的JDK）
 
-安装angular CLI: `npm i @angular/cli -g` (加版本的话后面+@x.x←版本号)
+安装angular CLI: `npm i @angular/cli -g` (-g为全局，加版本的话后面+@x.x←版本号，安装后可使用ng指令)
 
 查看版本：ng --version
 
@@ -40,7 +40,7 @@ serve: ng serve
 
 **package-lock.json** 版本
 
-**.gitignore git** 忽略文件
+**.gitignore git** 不被git检测到的文件配置
 
 ### 使用ESLint和Prettier配置Angular项目
 
@@ -128,12 +128,16 @@ router：路由
 pipe：管道
 
 - 对字符串做一些特定的处理，一般用来改变内容的格式
+- 给数据增加表现形式
+- （差值表达式）{{xxx|json}} {{xxx|async}} 自带管道，转json和等待。
 
 directive：指令
 
 - 改属性，扩容
+- 增加共通功能
 
 service：服务
+- 数据处理，前后台交互，数据清理
 
 ### 引入模块和服务（module.ts 文件）
 
@@ -151,7 +155,7 @@ service：服务
 
 为配置路径，设置页面跳转用。
 
-为惰性加载，预加载。
+loadChildren then 为惰性加载，预加载。
 
 `Router=[{ path: 'xxx', component: xxx, children[{}] }];`
 
