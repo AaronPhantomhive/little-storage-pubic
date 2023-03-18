@@ -15,15 +15,24 @@ ag-grid网格框架：https://www.ag-grid.com/angular-data-grid/
 Angular CLI 工具包 + Node.js（类似java的JDK）
 
 安装angular CLI: `npm i @angular/cli -g` (-g为全局，加版本的话后面+@x.x←版本号，安装后可使用ng指令)
-优先使用命令创建
+**优先使用命令创建，使用scss。**
 
 查看版本：ng --version
 
 help: ng help
 
-创建：ng new angular-start
+创建：ng new xxxx
 
 serve: ng serve
+
+加入material
+ng add @angular/material
+
+**P.S.**
+`无法加载文件 ...\npm\ng.ps1，因为在此系统上禁止运行脚本。`
+PowerShell 执行策略禁止了运行未签名的脚本:
+- 以管理员身份运行PowerShell。
+- 输入set-executionpolicy remotesigned，选择Y。
 
 ### 查看工程
 
