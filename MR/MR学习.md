@@ -3,8 +3,8 @@
 ## MR学习方向调查
 
 目前，代表性的MR眼镜有微软的HoloLens和Magic Leap等。
-想开发一个MR眼镜的产品，可能需要掌握一些相关的硬件和软件技术，比如数字光场技术、视网膜投射技术、SLAM算法、3D建模和渲染等等。
-也需要了解MR眼镜的应用场景和用户需求，比如教育、娱乐、医疗、工业等领域。
+硬件和软件技术，比如数字光场技术、视网膜投射技术、SLAM算法、3D建模和渲染等等。
+应用场景和用户需求，比如教育、娱乐、医疗、工业等领域。
 
 针对 HoloLens 的 Unity 开发：
 https://learn.microsoft.com/zh-cn/windows/mixed-reality/develop/unity/unity-development-overview?tabs=arr%2CD365%2Chl2
