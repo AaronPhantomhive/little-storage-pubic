@@ -98,7 +98,7 @@ And match response contains sampleJson
 
 ### assert
 
-断言，判断表达式是否是true
+断言，判断表达式是否是true（注意比较num大小只能用Then assert）
 
 ```cucumber
 Given def color = 'red'
