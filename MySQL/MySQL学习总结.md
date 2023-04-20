@@ -190,6 +190,8 @@ WHERE d.DeptNo IS NULL OR e.EmployeeID IS NULL
 ORDER BY d.DeptName
 ```
 
+* 需要注意，为空的情况 `IS NULL` 需要特别写出来。MySQL 使用三值逻辑：TRUE, FALSE 和 UNKNOWN。任何与 NULL 值进行的比较都会与第三种值 UNKNOWN 做比较。这个“任何值”包括 NULL 本身
+
 
 
 #### CROSS JOIN
