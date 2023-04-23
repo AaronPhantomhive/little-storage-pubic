@@ -169,15 +169,19 @@ ORDER BY VendorName
 
 #### LEFT JOIN, RIGHT JOIN
 
+```mysql
 SELECT v.VendorName, SUM(i.Balance) AS Balance
-FROM Vendors				v
+FROM Vendors v
 
 --4 different ways from(?) parent to child
 	JOIN vwInvoices	i
 	--LEFT JOIN vwInvoices	i
 	--RIGHT JOIN vwInvoices	i
 		ON v.VendorID = i.VendorID
-GROUP BY v.VendorName、
+GROUP BY v.VendorName
+```
+
+
 
 #### FULL JOIN 
 
