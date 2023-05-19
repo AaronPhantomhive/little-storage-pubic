@@ -444,4 +444,7 @@ getQuickFilterText: () => '',
 换句话说，组件实例化`agInit()`和销毁总是只调用一次。除非组件首先被销毁，否则组件的 GUI 通常会被渲染一次。`refresh()`可以选择多次调用。
 
 ### ts语法
-
+类型extends 可以用&
+eg：
+type a = {...}
+type b = a & {...}
