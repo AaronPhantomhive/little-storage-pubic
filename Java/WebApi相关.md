@@ -37,6 +37,13 @@ eg: `@Consumes(MediaType.APPLICATION_JSON)`
 eg: `@Produces(MediaType.APPLICATION_JSON)`
 
 
-
 ### 流程
+
+
+
+### Jackson注解
+（Jackson Annotation）
+https://blog.csdn.net/blwinner/article/details/98532847
+https://www.baeldung.com/jackson-annotations
+https://www.baeldung.com/jackson-advanced-annotations
 
