@@ -37,6 +37,22 @@ eg: `@Consumes(MediaType.APPLICATION_JSON)`
 eg: `@Produces(MediaType.APPLICATION_JSON)`
 
 
-
 ### 流程
+
+
+### 序列化
+将Java对象序列化成byte数组，保存到数据库为bytea类型的字段中。
+
+`byte[data] = SerializationUtils.serialize(javaObject);`
+
+反序列化：`SerializationUtils.deserialize`
+
+### Jackson注解
+（Jackson Annotation）
+
+https://blog.csdn.net/blwinner/article/details/98532847
+
+https://www.baeldung.com/jackson-annotations
+
+https://www.baeldung.com/jackson-advanced-annotations
 
