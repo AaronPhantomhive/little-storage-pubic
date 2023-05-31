@@ -303,6 +303,88 @@ Source from: https://github.com/iluwatar/30-seconds-of-java#30-seconds-of-java
 
 ## File
 
+### Convert Excel to Csv
+
+※ using POI package
+
+```java
+public static void convertExcelToCsv(String excelPath, String csvPath) {
+    File excelFile = new File(excelPath);
+    File csvFile = new File(csvPath);
+
+    // data formatter
+    DataFormatter dataFormatter = new DataFormatter();
+
+    // expression
+    FormulaEvaluator formulaEvaluator;
+
+    // Excel reading tool
+    Workbook workbook;
+
+    StringBuilder data = new StringBuilder();
+
+    // 2003: xls, 2007: xlsx, xlsm
+    String fileSuffix = excelPath.substring(excelPath.lastIndexOf(Constant.POINT_COMMA)).toLowerCase();
+    if (fileSuffix.equals("xls")) {
+        workbook = new HSSFWorkbook(new FileInputStream(excelFile));
+        formulaEvaluator = new HSSFFormulaEvaluator((HSSFWorkbook) workbook);
+    } else if (fileSuffix.equals("xlsx") || fileSuffix.equals("xlsm")) {
+        workbook = new XSSFWorkbook(new FileInputStream(excelFile));
+        formulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
+    } else {
+        return;
+    }
+
+    // get first sheet
+    for (Row row : workbook.getSheetAt(0)) {
+        int index = 1;
+
+        for (Cell cell : row) {
+            if (index > 1) {
+                data.append(",");
+            }
+
+            switch (cell.getCellType()) {
+                case STRING:
+                    data.append(cell.getStringCellValue());
+                    break;
+                    
+                case BOOLEAN:
+                    data.append(cell.getBooleanCellValue());
+                    break;
+
+                case NUMERIC:
+                    data.append(dataFormatter.formatCellValue(cell));
+                    break;
+
+                case FORMULA:
+                    Cell evaluateCell = formulaEvaluator.evaluateInCell(cell);
+                    data.append(dataFormatter.formatCellValue(evaluateCell));
+                    break;
+
+                case ERROR:
+                    data.append(cell.getErrorCellValue());
+                    break;
+
+                case BLANK:
+                    data.append("");
+                    break;
+
+                default:
+                    data.append(cell);
+            }
+            ++index;
+        }
+        data.append('\n');
+    }
+
+    // write csv file
+    FileOutputStream fileOutputStream = new FileOutputStream(csvFile);
+    fileOutputStream.write(data.toString().getBytes());
+    fileOutputStream.close();
+}
+```
+
 ### List directories
 
 ```java
