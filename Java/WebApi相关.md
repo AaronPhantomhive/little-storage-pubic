@@ -36,8 +36,9 @@ eg: `@Consumes(MediaType.APPLICATION_JSON)`
 
 eg: `@Produces(MediaType.APPLICATION_JSON)`
 
-
 ### 流程
+
+
 
 
 ### 序列化
@@ -48,7 +49,67 @@ eg: `@Produces(MediaType.APPLICATION_JSON)`
 反序列化：`SerializationUtils.deserialize`
 
 ### Jackson注解
+
+- 创建XmlMapper对象
+
+  ```java
+  XmlMapper xmlMapper = new XmlMapper();
+  ```
+
+- 使用@JacksonXmlRootElement，@JacksonXmlProperty等注解来标注java对象的属性和节点
+
+  - namespace：用于指定XML命名空间的名称
+
+  - localName：用于指定XML节点的标签名
+
+  - isAttribute：用于指定该属性是作为XML的属性（）还是作为子标签（）
+
+    ```java
+    @JacksonXmlProperty(isAttribute = true)
+    ```
+
+- 使用xmlMapper.writeValueAsString或xmlMapper.writeValue方法来将java对象序列化为xml字符串或文件
+
+  ```java
+  String xml = xmlMapper.writeValueAsString(new SimpleBean());
+  ```
+
+- 使用xmlMapper.readValue方法来将xml字符串或文件反序列化为java对象
+
+- CDATA value可以使用@JacksonXmlCData注解来指定一个属性的值是要被包裹在CDATA标签中的，例如：
+
+  ```xml
+  <content><![CDATA[Hello, world!]]></content>
+  ```
+
+  可以写成：
+
+  ```java
+  @JacksonXmlCData
+  public String content;
+  ```
+
+- list处理：
+
+  - useWrapping：用于指定是否使用包裹节点，默认为true
+
+    ```java
+    @JacksonXmlElementWrapper(useWrapping = false)
+    public List<Sender> list;
+    ```
+
+    ```xml
+    <Sender id="1" />
+    <Sender id="2" />
+    <Sender id="3" />
+    ```
+
+
+参考链接：
+
 （Jackson Annotation）
+
+https://blog.csdn.net/qq_20161461/article/details/111664807
 
 https://blog.csdn.net/blwinner/article/details/98532847
 
