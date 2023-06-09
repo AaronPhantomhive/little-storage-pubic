@@ -501,14 +501,13 @@ useState这个hook让函数变成了一个有状态的函数。
 
 纯函数组件没有状态，这个钩子用于为函数组件引入状态(state)。
 
-useState是react自带的一个hook函数，它的作用就是用来声明状态变量：
+useState是react自带的一个hook函数，意思是声明一个状态变量，并给它一个初始值0。useState会返回一个数组，包含两个元素：当前的状态值和一个更新状态的函数。可以用数组解构的语法来给它们取名，比如：
 
 ```react
-import { useState } from 'react';
-
-function Example() {
-    const [count, setCount] = useState(0);
+const [count, setCount] = useState(0);
 ```
+这样就可以在组件中使用count变量来读取状态值，或者使用setCount函数来更新状态值，并触发组件重新渲染。
+
 
 如果不用数组解构的话，可以写成下面这样。实际上数组解构是一件开销很大的事情，用下面这种写法，或者改用对象解构，性能会有很大的提升：
 
