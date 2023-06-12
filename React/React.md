@@ -506,6 +506,7 @@ useState是react自带的一个hook函数，意思是声明一个状态变量，
 ```react
 const [count, setCount] = useState(0);
 ```
+
 这样就可以在组件中使用count变量来读取状态值，或者使用setCount函数来更新状态值，并触发组件重新渲染。
 
 
@@ -541,7 +542,9 @@ let setCount = _useState[1];
 
 #### 2、[useEffect](https://zh-hans.reactjs.org/docs/hooks-effect.html)
 
-副作用处理钩子
+副作用处理钩子。副作用（side effects）是指那些在组件内部无法处理的操作，比如网络请求、手动修改DOM、日志记录等。
+
+ps: useEffect还可以接受一个数组作为第二个参数，这个数组表示副作用的依赖项。如果依赖项没有变化，React就不会重新执行副作用。
 
 使用示例：
 
@@ -554,7 +557,7 @@ function Example() {
     useEffect(() => {
         // 更新文档的标题
         document.title = 'You clicked ${count} times';
-    });
+    }, [count]); // ← [count]接受数组作为第二个参数表示副作用的依赖项
 
     return (
     	<div>
