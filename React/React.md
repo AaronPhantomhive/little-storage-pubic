@@ -1845,7 +1845,9 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
 
 
 
-## 不渲染问题
+## 其他知识补充
+
+### 不渲染问题
 
 - 组件render了一个对象，当state确定更新，但视图没有更新
 
@@ -1879,8 +1881,6 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
   ```
 
 
-
-## 其他知识补充
 
 ### JS & TS补充
 
@@ -2121,4 +2121,4 @@ require(['cytoscape'], function(cytoscape){
 
 road map
 
-![roadmap](..\React\roadmap.png)
+![roadmap](https://github.com/AaronPhantomhive/little-storage-pubic/blob/main/React/roadmap.png)
