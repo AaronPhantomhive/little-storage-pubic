@@ -1847,6 +1847,8 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
 
 [官网](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 
+### 基本
+
 ```react
 // Create a client
 const queryClient = new QueryClient()
@@ -1863,6 +1865,8 @@ function App() {
 }
 ```
 
+### useQuery
+
 - useQuery接收一个唯一键和一个返回Promise的函数以及config `[queryKey, queryFn, config]`，如`posts`在内部用于在整个程序中重新获取数据、缓存和共享查询等
   - queryKey: 一个用于标识查询的键，可以是任意类型的值，但通常是一个字符串或一个数组。查询键会被哈希成一个稳定的键。当查询键改变时，查询会自动更新（除非 enabled 设置为 false）。
   - queryFn: 一个用于获取数据的函数，接收一个 QueryFunctionContext 参数，必须返回一个 promise，要么解析数据，要么抛出错误。数据不能是 undefined。如果没有定义默认的查询函数，这个参数是必需的。
@@ -1878,7 +1882,7 @@ function App() {
 
 - isIdle 或者 status === 'idle' 查询处于禁用状态
 
-完整例子：
+### 完整例子
 
 ```react
 import {
@@ -1940,6 +1944,29 @@ function Todos() {
 }
 
 render(<App />, document.getElementById('root'))
+```
+
+### fresh, fetching, stale 
+
+为数据的新鲜度和有效期有关的概念
+
+- fresh表示数据是最新的，不需要重新获取
+- fetching表示数据正在被获取中，可能是第一次获取，也可能是重新获取
+
+- stale表示数据已经过期，需要重新获取
+
+react-query默认会在每次页面获得焦点时，检查数据是否过期，如果过期就重新获取。
+
+可以通过配置staleTime来设置数据的有效期。你也可以通过useMutation来更新数据，并通过onSuccess回调来设置新的查询数据。
+
+staleTime例子：
+
+```react
+const queryUsers = useQuery("gitUsers", () => {
+  return fetch("https://api.github.com/search/users?q=joby").then((res) =>
+    res.json()
+  );
+}, { staleTime: 5000 }); // 设置数据的有效期为5秒
 ```
 
 
