@@ -1843,6 +1843,107 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
 
 
 
+## React - Query
+
+[官网](https://tanstack.com/query/v4/docs/react/reference/useQuery)
+
+```react
+// Create a client
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    // Provide the client to your App
+    <QueryClientProvider client={queryClient}>
+      {/* 添加devtools */}
+      {props.development && <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />}
+      <Main />
+    </QueryClientProvider>
+  )
+}
+```
+
+- useQuery接收一个唯一键和一个返回Promise的函数以及config `[queryKey, queryFn, config]`，如`posts`在内部用于在整个程序中重新获取数据、缓存和共享查询等
+  - queryKey: 一个用于标识查询的键，可以是任意类型的值，但通常是一个字符串或一个数组。查询键会被哈希成一个稳定的键。当查询键改变时，查询会自动更新（除非 enabled 设置为 false）。
+  - queryFn: 一个用于获取数据的函数，接收一个 QueryFunctionContext 参数，必须返回一个 promise，要么解析数据，要么抛出错误。数据不能是 undefined。如果没有定义默认的查询函数，这个参数是必需的。
+  - options: 一个可选的对象，用来配置查询的行为，例如 retry, staleTime, cacheTime 等。
+
+- isFetching 或者 status === 'fetching' 类似于isLoading，不过每次请求时都为true，所以使用isFetching作为loading态更好
+
+- isLoading 或者 status === 'loading' 查询没有数据，正在获取结果中，只有“硬加载”时才为true，只要请求在cacheTime设定时间内，再次请求就会直接使用cache，即“isLoaindg = isFetching + no cached data”
+
+- isError 或者 status === 'error' 查询遇到一个错误，此时可以通过 error 获取到错误
+
+- isSuccess 或者 status === 'success' 查询成功，并且数据可用，通过 data 获取数据
+
+- isIdle 或者 status === 'idle' 查询处于禁用状态
+
+完整例子：
+
+```react
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
+import { getTodos, postTodo } from '../my-api'
+
+// 创建一个 client
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    // 提供 client 至 App
+    <QueryClientProvider client={queryClient}>
+      <Todos />
+    </QueryClientProvider>
+  )
+}
+
+function Todos() {
+  // 访问 client
+  const queryClient = useQueryClient()
+
+  // 查询
+  const query = useQuery('todos', getTodos)
+
+  // 修改
+  const mutation = useMutation(postTodo, {
+    onSuccess: () => {
+      // 错误处理和刷新
+      queryClient.invalidateQueries('todos')
+    },
+  })
+
+  return (
+    <div>
+      <ul>
+        {query.data.map((todo) => (
+          <li key={todo.id}>{todo.title}</li>
+        ))}
+      </ul>
+
+      <button
+        onClick={() => {
+          mutation.mutate({
+            id: Date.now(),
+            title: 'Do Laundry',
+          })
+        }}
+      >
+        Add Todo
+      </button>
+    </div>
+  )
+}
+
+render(<App />, document.getElementById('root'))
+```
+
+
+
 ## 轻量状态管理库 unstated-next
 
 [github官网](https://github.com/jamiebuilds/unstated-next)
@@ -1894,9 +1995,141 @@ function App() {
 }
 ```
 
+### <Container.Provider>
 
+`Provider` 就是对 `value` 进行了约束，**固化了 Hooks 返回的 value 直接作为** `value` **传递给** `Context.Provider` **这个规范。**
 
+```tsx
+function ParentComponent() {
+  return (
+    <Container.Provider>
+      <ChildComponent />
+    </Container.Provider>
+  )
+}
+```
 
+### <Container.Provider initialState>
+
+`initialState` 用来初始化数据
+
+```tsx
+function useCustomHook(initialState = "") {
+  let [value, setValue] = useState(initialState)
+  // ...
+}
+
+function ParentComponent() {
+  return (
+    <Container.Provider initialState={"value"}>
+      <ChildComponent />
+    </Container.Provider>
+  )
+}
+```
+
+### Container.useContainer()
+
+ `useContainer` 就是对 `React.useContext(Context)` 的封装。作用为使用数据。
+
+```tsx
+function ChildComponent() {
+  let input = Container.useContainer()
+  return <input value={input.value} onChange={input.onChange} />
+}
+```
+
+### useContainer(Container)
+
+```tsx
+import { useContainer } from "unstated-next"
+
+function ChildComponent() {
+  let input = useContainer(Container)
+  return <input value={input.value} onChange={input.onChange} />
+}
+```
+
+### 和useContext对比
+
+```diff
+- import { createContext, useContext } from "react"
++ import { createContainer } from "unstated-next"
+
+  function useCounter() {
+    ...
+  }
+
+- let Counter = createContext(null)
++ let Counter = createContainer(useCounter)
+
+  function CounterDisplay() {
+-   let counter = useContext(Counter)
++   let counter = Counter.useContainer()
+    return (
+      <div>
+        ...
+      </div>
+    )
+  }
+
+  function App() {
+-   let counter = useCounter()
+    return (
+-     <Counter.Provider value={counter}>
++     <Counter.Provider>
+        <CounterDisplay />
+        <CounterDisplay />
+      </Counter.Provider>
+    )
+  }
+```
+
+### 多层Container.Provider嵌套问题
+
+```tsx
+const containers: any[] = []; // 👈数组里填要合并的Containers
+function Composed(props: any) {
+    return containers.reduce((children, Container) => {
+      return <Container.Provider>{children}</Container.Provider>;
+    }, props.children);
+  };
+}
+```
+
+完整例子：
+
+```tsx
+// compose.tsx
+import React from "react";
+
+export function compose(...containers: any[]) {
+  return function Composed(props: any) {
+    return containers.reduceRight((children, Container) => {
+      return <Container.Provider>{children}</Container.Provider>;
+    }, props.children);
+  };
+}
+
+// main.tsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { GeneralContainer } from "./containers/GeneralContainer";
+import { UserContainer } from "./containers/UserContainer";
+import { PlanContainer } from "./containers/PlanContainer";
+import { compose } from "./containers/compose";
+import App from "./App";
+
+const Composed = compose(GeneralContainer, UserContainer, PlanContainer);
+
+ReactDOM.render(
+  <Composed>
+    <App />
+  </Composed>,
+  document.getElementById("app")
+);
+
+```
 
 
 
