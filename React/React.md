@@ -732,8 +732,6 @@ let value = temp;
 
 
 
-
-
 ## Redux
 
 "只有遇到 React 实在解决不了的问题，你才需要 Redux 。"
@@ -1845,6 +1843,63 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
 
 
 
+## 轻量状态管理库 unstated-next
+
+[github官网](https://github.com/jamiebuilds/unstated-next)
+
+提供 `createContainer` 将自定义 Hooks 封装为一个可以提供状态和方法的 **数据对象**
+
+利用 `useContext` 构造了 Provider 注入 和 组件获取获取 Store 这两个方法
+
+### createContainer(useHook)
+
+可以将任何 Hooks 包装成一个数据对象，这个对象有 `Provider` 与 `useContainer` 两个 API，其中 `Provider` 用于对某个作用域注入数据，而 `useContainer` 可以取到这个数据对象在当前作用域的实例。
+
+对 Hooks 的参数也进行了规范化，我们可以通过 `initialState` 设定初始化数据，且不同作用域可以嵌套并赋予不同的初始化值：对 Hooks 的参数也进行了规范化，我们可以通过 `initialState` 设定初始化数据，且不同作用域可以嵌套并赋予不同的初始化值，官方例子：
+
+```tsx
+function useCounter(initialState = 0) {
+  let [count, setCount] = useState(initialState);
+  let decrement = () => setCount(count - 1);
+  let increment = () => setCount(count + 1);
+  return { count, decrement, increment };
+}
+
+const Counter = createContainer(useCounter);
+
+function CounterDisplay() {
+  let counter = Counter.useContainer();
+  return (
+    <div>
+      <button onClick={counter.decrement}>-</button>
+      <span>{counter.count}</span>
+      <button onClick={counter.increment}>+</button>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Counter.Provider>
+      <CounterDisplay />
+      <Counter.Provider initialState={2}>
+        <div>
+          <div>
+            <CounterDisplay />
+          </div>
+        </div>
+      </Counter.Provider>
+    </Counter.Provider>
+  );
+}
+```
+
+
+
+
+
+
+
 ## 其他知识补充
 
 ### 不渲染问题
@@ -1879,6 +1934,14 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
   // 或
   eles = eles.slice().sort();
   ```
+
+
+
+### 使对象不可变的小技巧
+
+- `const newState = Object.assign({}, state, {foo:123});`
+- 解构
+  - `const newState = {...state, foo:123}`
 
 
 
