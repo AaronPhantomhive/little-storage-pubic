@@ -1969,6 +1969,14 @@ const queryUsers = useQuery("gitUsers", () => {
 }, { staleTime: 5000 }); // 设置数据的有效期为5秒
 ```
 
+### staleTime（不新鲜时间） 
+
+默认0，可全局或单独配置，在此段时间内再次遇到相同key的请求，不会再去获取数据，直接从缓存中获取，isFetching也为false，如果设置为Infinity，则当前查询的数据只会获取一次，在整个网页的生命周期内缓存
+
+### cacheTime（缓存时间） 
+
+数据在内存中的缓存时间，默认5分钟，在不设置slateTime时，如果缓存期内遇到相同key的请求，虽然会直接使用缓存数据呈现UI，但还是会获取新数据，待获取完毕后切换为新数据，isFetching为true；如果某个queryKey未被使用时，这个query就会进入inactive状态，如果在cacheTime设定的时间内未被使用的话，这个query及其data就会被清除
+
 
 
 ## 轻量状态管理库 unstated-next
