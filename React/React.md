@@ -497,6 +497,11 @@ useState这个hook让函数变成了一个有状态的函数。
 - 普通函数
 - callback
 
+**可以使用的地方：**
+
+- 函数组件的最顶层
+- React 函数中（可以在 Hook 中调用其他的 Hook）
+
 #### 1、[useState](https://zh-hans.reactjs.org/docs/hooks-state.html)
 
 纯函数组件没有状态，这个钩子用于为函数组件引入状态(state)。
