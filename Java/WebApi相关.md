@@ -62,7 +62,7 @@ eg: `@Produces(MediaType.APPLICATION_JSON)`
 
   - localName：用于指定XML节点的标签名
 
-  - isAttribute：用于指定该属性是作为XML的属性（）还是作为子标签（）
+  - isAttribute：用于指定该属性是作为XML的属性还是作为子标签
 
     ```java
     @JacksonXmlProperty(isAttribute = true)

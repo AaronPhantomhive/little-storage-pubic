@@ -497,6 +497,11 @@ useState这个hook让函数变成了一个有状态的函数。
 - 普通函数
 - callback
 
+**可以使用的地方：**
+
+- 函数组件的最顶层
+- React 函数中（可以在 Hook 中调用其他的 Hook）
+
 #### 1、[useState](https://zh-hans.reactjs.org/docs/hooks-state.html)
 
 纯函数组件没有状态，这个钩子用于为函数组件引入状态(state)。
@@ -729,8 +734,6 @@ const plotDataKeyIndex = useMBSelector(useTheOtherSelector(aId, bId, (def) => de
 const temp = Number(nodeDAtaArray[plotDataKeyIndex]);
 let value = temp;
 ```
-
-
 
 
 
@@ -1845,7 +1848,334 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
 
 
 
-## 不渲染问题
+## React - Query
+
+[官网](https://tanstack.com/query/v4/docs/react/reference/useQuery)
+
+### 基本
+
+```react
+// Create a client
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    // Provide the client to your App
+    <QueryClientProvider client={queryClient}>
+      {/* 添加devtools */}
+      {props.development && <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />}
+      <Main />
+    </QueryClientProvider>
+  )
+}
+```
+
+### useQuery
+
+- useQuery接收一个唯一键和一个返回Promise的函数以及config `[queryKey, queryFn, config]`，如`posts`在内部用于在整个程序中重新获取数据、缓存和共享查询等
+  - queryKey: 一个用于标识查询的键，可以是任意类型的值，但通常是一个字符串或一个数组。查询键会被哈希成一个稳定的键。当查询键改变时，查询会自动更新（除非 enabled 设置为 false）。
+  - queryFn: 一个用于获取数据的函数，接收一个 QueryFunctionContext 参数，必须返回一个 promise，要么解析数据，要么抛出错误。数据不能是 undefined。如果没有定义默认的查询函数，这个参数是必需的。
+  - options: 一个可选的对象，用来配置查询的行为，例如 retry, staleTime, cacheTime 等。
+
+- isFetching 或者 status === 'fetching' 类似于isLoading，不过每次请求时都为true，所以使用isFetching作为loading态更好
+
+- isLoading 或者 status === 'loading' 查询没有数据，正在获取结果中，只有“硬加载”时才为true，只要请求在cacheTime设定时间内，再次请求就会直接使用cache，即“isLoaindg = isFetching + no cached data”
+
+- isError 或者 status === 'error' 查询遇到一个错误，此时可以通过 error 获取到错误
+
+- isSuccess 或者 status === 'success' 查询成功，并且数据可用，通过 data 获取数据
+
+- isIdle 或者 status === 'idle' 查询处于禁用状态
+
+### 完整例子
+
+```react
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
+import { getTodos, postTodo } from '../my-api'
+
+// 创建一个 client
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    // 提供 client 至 App
+    <QueryClientProvider client={queryClient}>
+      <Todos />
+    </QueryClientProvider>
+  )
+}
+
+function Todos() {
+  // 访问 client
+  const queryClient = useQueryClient()
+
+  // 查询
+  const query = useQuery('todos', getTodos)
+
+  // 修改
+  const mutation = useMutation(postTodo, {
+    onSuccess: () => {
+      // 错误处理和刷新
+      queryClient.invalidateQueries('todos')
+    },
+  })
+
+  return (
+    <div>
+      <ul>
+        {query.data.map((todo) => (
+          <li key={todo.id}>{todo.title}</li>
+        ))}
+      </ul>
+
+      <button
+        onClick={() => {
+          mutation.mutate({
+            id: Date.now(),
+            title: 'Do Laundry',
+          })
+        }}
+      >
+        Add Todo
+      </button>
+    </div>
+  )
+}
+
+render(<App />, document.getElementById('root'))
+```
+
+### fresh, fetching, stale 
+
+为数据的新鲜度和有效期有关的概念
+
+- fresh表示数据是最新的，不需要重新获取
+- fetching表示数据正在被获取中，可能是第一次获取，也可能是重新获取
+
+- stale表示数据已经过期，需要重新获取
+
+react-query默认会在每次页面获得焦点时，检查数据是否过期，如果过期就重新获取。
+
+可以通过配置staleTime来设置数据的有效期。你也可以通过useMutation来更新数据，并通过onSuccess回调来设置新的查询数据。
+
+staleTime例子：
+
+```react
+const queryUsers = useQuery("gitUsers", () => {
+  return fetch("https://api.github.com/search/users?q=joby").then((res) =>
+    res.json()
+  );
+}, { staleTime: 5000 }); // 设置数据的有效期为5秒
+```
+
+### staleTime（不新鲜时间） 
+
+默认0，可全局或单独配置，在此段时间内再次遇到相同key的请求，不会再去获取数据，直接从缓存中获取，isFetching也为false，如果设置为Infinity，则当前查询的数据只会获取一次，在整个网页的生命周期内缓存
+
+### cacheTime（缓存时间） 
+
+数据在内存中的缓存时间，默认5分钟，在不设置slateTime时，如果缓存期内遇到相同key的请求，虽然会直接使用缓存数据呈现UI，但还是会获取新数据，待获取完毕后切换为新数据，isFetching为true；如果某个queryKey未被使用时，这个query就会进入inactive状态，如果在cacheTime设定的时间内未被使用的话，这个query及其data就会被清除
+
+
+
+## 轻量状态管理库 unstated-next
+
+[github官网](https://github.com/jamiebuilds/unstated-next)
+
+提供 `createContainer` 将自定义 Hooks 封装为一个可以提供状态和方法的 **数据对象**
+
+利用 `useContext` 构造了 Provider 注入 和 组件获取获取 Store 这两个方法
+
+### createContainer(useHook)
+
+可以将任何 Hooks 包装成一个数据对象，这个对象有 `Provider` 与 `useContainer` 两个 API，其中 `Provider` 用于对某个作用域注入数据，而 `useContainer` 可以取到这个数据对象在当前作用域的实例。
+
+对 Hooks 的参数也进行了规范化，我们可以通过 `initialState` 设定初始化数据，且不同作用域可以嵌套并赋予不同的初始化值：对 Hooks 的参数也进行了规范化，我们可以通过 `initialState` 设定初始化数据，且不同作用域可以嵌套并赋予不同的初始化值，官方例子：
+
+```tsx
+function useCounter(initialState = 0) {
+  let [count, setCount] = useState(initialState);
+  let decrement = () => setCount(count - 1);
+  let increment = () => setCount(count + 1);
+  return { count, decrement, increment };
+}
+
+const Counter = createContainer(useCounter);
+
+function CounterDisplay() {
+  let counter = Counter.useContainer();
+  return (
+    <div>
+      <button onClick={counter.decrement}>-</button>
+      <span>{counter.count}</span>
+      <button onClick={counter.increment}>+</button>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Counter.Provider>
+      <CounterDisplay />
+      <Counter.Provider initialState={2}>
+        <div>
+          <div>
+            <CounterDisplay />
+          </div>
+        </div>
+      </Counter.Provider>
+    </Counter.Provider>
+  );
+}
+```
+
+### <Container.Provider>
+
+`Provider` 就是对 `value` 进行了约束，**固化了 Hooks 返回的 value 直接作为** `value` **传递给** `Context.Provider` **这个规范。**
+
+```tsx
+function ParentComponent() {
+  return (
+    <Container.Provider>
+      <ChildComponent />
+    </Container.Provider>
+  )
+}
+```
+
+### <Container.Provider initialState>
+
+`initialState` 用来初始化数据
+
+```tsx
+function useCustomHook(initialState = "") {
+  let [value, setValue] = useState(initialState)
+  // ...
+}
+
+function ParentComponent() {
+  return (
+    <Container.Provider initialState={"value"}>
+      <ChildComponent />
+    </Container.Provider>
+  )
+}
+```
+
+### Container.useContainer()
+
+ `useContainer` 就是对 `React.useContext(Context)` 的封装。作用为使用数据。
+
+```tsx
+function ChildComponent() {
+  let input = Container.useContainer()
+  return <input value={input.value} onChange={input.onChange} />
+}
+```
+
+### useContainer(Container)
+
+```tsx
+import { useContainer } from "unstated-next"
+
+function ChildComponent() {
+  let input = useContainer(Container)
+  return <input value={input.value} onChange={input.onChange} />
+}
+```
+
+### 和useContext对比
+
+```diff
+- import { createContext, useContext } from "react"
++ import { createContainer } from "unstated-next"
+
+  function useCounter() {
+    ...
+  }
+
+- let Counter = createContext(null)
++ let Counter = createContainer(useCounter)
+
+  function CounterDisplay() {
+-   let counter = useContext(Counter)
++   let counter = Counter.useContainer()
+    return (
+      <div>
+        ...
+      </div>
+    )
+  }
+
+  function App() {
+-   let counter = useCounter()
+    return (
+-     <Counter.Provider value={counter}>
++     <Counter.Provider>
+        <CounterDisplay />
+        <CounterDisplay />
+      </Counter.Provider>
+    )
+  }
+```
+
+### 多层Container.Provider嵌套问题
+
+```tsx
+const containers: any[] = []; // 👈数组里填要合并的Containers
+function Composed(props: any) {
+    return containers.reduce((children, Container) => {
+      return <Container.Provider>{children}</Container.Provider>;
+    }, props.children);
+  };
+}
+```
+
+完整例子：
+
+```tsx
+// compose.tsx
+import React from "react";
+
+export function compose(...containers: any[]) {
+  return function Composed(props: any) {
+    return containers.reduceRight((children, Container) => {
+      return <Container.Provider>{children}</Container.Provider>;
+    }, props.children);
+  };
+}
+
+// main.tsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { GeneralContainer } from "./containers/GeneralContainer";
+import { UserContainer } from "./containers/UserContainer";
+import { PlanContainer } from "./containers/PlanContainer";
+import { compose } from "./containers/compose";
+import App from "./App";
+
+const Composed = compose(GeneralContainer, UserContainer, PlanContainer);
+
+ReactDOM.render(
+  <Composed>
+    <App />
+  </Composed>,
+  document.getElementById("app")
+);
+
+```
+
+
+
+## 其他知识补充
+
+### 不渲染问题
 
 - 组件render了一个对象，当state确定更新，但视图没有更新
 
@@ -1880,7 +2210,13 @@ const selectABC2 = createSelector(selectA, selectB, selectC, (a, b, c) => {
 
 
 
-## 其他知识补充
+### 使对象不可变的小技巧
+
+- `const newState = Object.assign({}, state, {foo:123});`
+- 解构
+  - `const newState = {...state, foo:123}`
+
+
 
 ### JS & TS补充
 
@@ -2121,4 +2457,4 @@ require(['cytoscape'], function(cytoscape){
 
 road map
 
-![roadmap](..\React\roadmap.png)
+![roadmap](https://github.com/AaronPhantomhive/little-storage-pubic/blob/main/React/roadmap.png)
