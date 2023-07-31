@@ -495,7 +495,7 @@ useState这个hook让函数变成了一个有状态的函数。
 - 条件（if）
 - 嵌套函数
 - 普通函数
-- callback
+- callback（useEffect属于callback）
 
 **可以使用的地方：**
 
