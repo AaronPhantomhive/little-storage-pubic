@@ -552,7 +552,9 @@ let setCount = _useState[1];
 ps: useEffect还可以接受一个数组作为第二个参数，这个数组表示副作用的依赖项。如果依赖项没有变化，React就不会重新执行副作用。
 
 ps: react18之后，开发模式下，StrictMode时，useEffect会加载两次，是为了模拟立即卸载组件和重新挂载组件。
-The right question isn’t “how to run an Effect once,” but “how to fix my Effect so that it works after remounting”.翻译一下，就是说：正确的问题不是“怎么样让 Effect 执行一次”，而是“怎样修复我的 Effect，让它在(重复)挂载之后正常工作”
+
+The right question isn’t “how to run an Effect once,” but “how to fix my Effect so that it works after remounting”. 正确的解决办法不是“怎么样让 Effect 执行一次”，而是“怎样修复我的 Effect，让它在(重复)挂载之后正常工作”
+
 具体解决办法详见：https://blog.csdn.net/qq_34164814/article/details/127750672
 
 使用示例：
