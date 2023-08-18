@@ -5,6 +5,15 @@
 “有个贴切的比喻，把DOM和JavaScript各自想象为一个岛屿，它们之间用收费桥梁连接，js每次访问DOM，都要途径这座桥，并交纳“过桥费”,访问DOM的次数越多，费用也就越高。 因此，推荐的做法是尽量减少过桥的次数，努力待在ECMAScript岛上。因为这个原因react的虚拟dom就显得难能可贵了，它创造了虚拟dom并且将它们储存起来，每当状态发生变化的时候就会创造新的虚拟节点和以前的进行对比，让变化的部分进行渲染。整个过程没有对dom进行获取和操作，只有一个渲染的过程，所以react说是一个ui框架。”
 
 
+### React搭建项目
+
+vite 搭建 react18 项目
+
+`yarn create vite app-client --template react-ts`
+
+https://zhuanlan.zhihu.com/p/518339176
+
+https://vitejs.dev/
 
 ### React核心特点
 
