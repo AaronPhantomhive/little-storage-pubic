@@ -2330,6 +2330,9 @@ Object.keys(viewPlotMap).forEach((plot) => {
 <React.StrictMode>
 ```
 
+#### CSS相关
+
+鼠标变成禁止符号：cursor:"not-allowed"
 
 
 ### Base64编码
