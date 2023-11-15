@@ -14,8 +14,6 @@ https://eclipse-ee4j.github.io/jersey.github.io/documentation/latest/index.html
 
 eg: `@Path("/users/{username}")`
 
-笔记
-
 
 
 `@GET、@PUT、@POST、@DELETE、...（HTTP）`
