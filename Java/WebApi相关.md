@@ -105,15 +105,23 @@ eg: `@Produces(MediaType.APPLICATION_JSON)`
     ```
 
 
-参考链接：
+Jackson相关参考链接：
 
 （Jackson Annotation）
 
+使用jackson把java对象转成xml格式
+
 https://blog.csdn.net/qq_20161461/article/details/111664807
+
+Jackson之注解大全
 
 https://blog.csdn.net/blwinner/article/details/98532847
 
+Jackson Annotation Examples
+
 https://www.baeldung.com/jackson-annotations
+
+More Jackson Annotations
 
 https://www.baeldung.com/jackson-advanced-annotations
 
