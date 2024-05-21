@@ -37,3 +37,22 @@ win+R打开注册表regedit
 ### 删除浏览器session
 
 ![delete_session](delete_session.png) 
+
+
+### WebStorm设置
+
+#### 自动保存
+
+![autoSave](autoSave.png)
+
+#### 编辑文件出星
+
+![2022-05-16_10-26-12](2022-05-16_10-26-12.png)
+
+#### 保存时自动格式化
+
+先全局安装prettier
+
+`npm i -g prettier`
+
+![prettier](prettier.png)
