@@ -36,4 +36,4 @@ win+R打开注册表regedit
 
 ### 删除浏览器session
 
-![delete_session](D:\Stuff\others\一些教程\computerStuff\delete_session.png) 
+![delete_session](delete_session.png) 
