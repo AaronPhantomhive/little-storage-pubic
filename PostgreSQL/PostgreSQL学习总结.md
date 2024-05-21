@@ -32,3 +32,36 @@ ADD FOREIGN KEY (name) REFERENCES tenant_1.b2b_definition(name) ON DELETE CASCAD
 这段SQL语句的作用是在`b2b_info`表中添加一个名为`name`的外键约束，该约束将`name`字段与`b2b_definition`表中的`name`字段相关联，并且当`b2b_definition`表中相应的行被删除时，`b2b_info`表中相关的行也会被删除。
 
 外键约束用于确保在两个表之间建立引用关系，保证数据的一致性和完整性。
+
+
+
+### 主键约束
+
+```sql
+ALTER TABLE public.b2b_prop 
+ADD CONSTRAINT b2b_prop_pkey PRIMARY KEY (key,tenant_id);
+```
+
+- `ALTER TABLE` 用于修改现有表的结构。
+- `ADD CONSTRAINT` 是添加约束的子句。
+- `(key, tenant_id)` 指定了主键由 `key` 和 `tenant_id` 这两列组合而成。
+
+
+
+### 处理插入冲突
+
+```sql
+INSERT INTO ${schema}.b2b_prop (key, value, tenant_id) 
+VALUES ('mode', '0', ${tenantId}) 
+ON CONFLICT (key,tenant_id) DO UPDATE SET value = EXCLUDED.value 
+```
+
+
+
+### 从一个序列对象中获取下一个值
+
+`nextval` 函数会自动递增序列并返回递增后的新值。
+
+```sql
+SELECT nextval('public.b2b_tenant_seq')
+```
