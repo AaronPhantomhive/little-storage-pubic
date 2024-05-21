@@ -92,4 +92,3 @@ SELECT nspname FROM pg_namespace;
 - **pg_catalog**：提供了数据库的核心元数据，并且是查询和管理数据库对象信息的基础。包含数据库元数据和系统表。
 - **public**：默认的用户schema，通常用于存储用户创建的表和对象。
 - **information_schema**：提供了一种标准化方式来访问数据库元数据，方便数据库管理和迁移。
-- 
