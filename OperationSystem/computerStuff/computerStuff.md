@@ -30,7 +30,7 @@ win+R打开注册表regedit
 
 コンピューター\HKEY_CURRENT_USER\Software\Typora
 
-![Typora过期问题](Typora过期问题.png) 
+![Typora过期解决办法](Typora过期解决办法.png) 
 
 
 
