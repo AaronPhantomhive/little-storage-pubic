@@ -65,3 +65,31 @@ ON CONFLICT (key,tenant_id) DO UPDATE SET value = EXCLUDED.value
 ```sql
 SELECT nextval('public.b2b_tenant_seq')
 ```
+
+
+
+### 查询命名空间（schema）
+
+```sql
+SELECT nspname FROM pg_namespace;
+```
+
+- `pg_namespace` 是PostgreSQL系统表的名称，包含了关于数据库中所有命名空间的信息。
+
+可能会看见以下结果：
+
+```
+  nspname     
+----------------------
+  pg_toast
+  pg_catalog
+  public
+  information_schema
+  ...
+```
+
+- **pg_toast**：用于存储大对象的溢出数据。确保PostgreSQL可以高效地管理超大数据。
+- **pg_catalog**：提供了数据库的核心元数据，并且是查询和管理数据库对象信息的基础。包含数据库元数据和系统表。
+- **public**：默认的用户schema，通常用于存储用户创建的表和对象。
+- **information_schema**：提供了一种标准化方式来访问数据库元数据，方便数据库管理和迁移。
+- 
