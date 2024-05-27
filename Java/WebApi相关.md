@@ -42,13 +42,16 @@ eg: `@Produces(MediaType.APPLICATION_JSON)`
 
 
 ### 序列化
+
 将Java对象序列化成byte数组，保存到数据库为bytea类型的字段中。
 
 `byte[data] = SerializationUtils.serialize(javaObject);`
 
 反序列化：`SerializationUtils.deserialize`
 
-### Jackson注解
+### Jackson注解：java <=> xml
+
+#### java对象转成xml格式
 
 - 创建XmlMapper对象
 
@@ -104,8 +107,68 @@ eg: `@Produces(MediaType.APPLICATION_JSON)`
     <Sender id="3" />
     ```
 
+#### 从xml读取成java对象
 
-Jackson相关参考链接：
+xml例子：
+
+```xml
+<root>
+    <function>
+        <name>name1</name>
+        <ddl>
+          aaaaaaaaaaaaaaaaa
+        </ddl>
+    </function>
+    <function>
+        <name>name2</name>
+        <ddl>
+          aaaaaaaaaaaaaaaaa
+        </ddl>
+    </function>
+</root>
+```
+
+`ReadXmlEntry.java:`
+
+```java
+public class ReadXmlEntry {
+    public static class Function {
+
+        private String ddl;
+
+        public String getDdl() {
+            return ddl;
+        }
+
+        public void setDdl(String ddl) {
+            this.ddl = ddl;
+        }
+    }
+
+    public static class Triggers {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JacksonXmlProperty(localName = "function")
+        private List<Function> function;
+
+        public List<Function> getFunction() {
+            return function;
+        }
+
+        public void setFunction(List<Function> function) {
+            this.function = function;
+        }
+    }
+}
+```
+
+从xml转成java对象：
+
+```java
+XmlMapper xmlMapper = new XmlMapper();
+ReadXmlEntry.Root readXml = xmlMapper.readValue(in, ReadXmlEntry.Root.class);
+```
+
+#### Jackson相关参考链接：
 
 （Jackson Annotation）
 
