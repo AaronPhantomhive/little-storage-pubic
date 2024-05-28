@@ -1,6 +1,6 @@
 # WebApi开发相关
 
-### Jersey
+## Jersey
 
 https://eclipse-ee4j.github.io/jersey.github.io/documentation/latest/index.html
 
@@ -187,4 +187,37 @@ https://www.baeldung.com/jackson-annotations
 More Jackson Annotations
 
 https://www.baeldung.com/jackson-advanced-annotations
+
+
+
+## 读取文件执行sql
+
+### BufferedReader
+
+```java
+private BufferedReader openTenantDdlFiles(String ddl) throws UnsupportedEncodingException {
+    InputStream in = readTenantDdlFiles(ddl);
+    if (in != null) {
+        return new BufferedReader(new InputStreamReader(in, "UTF-8"));
+    }
+    
+    return null;
+}
+```
+
+```java
+private InputStream readTenantDdlFiles(String ddl) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(ddlPackage.replaceAll("\\.", "/"));
+    sb.append("/").append(ddl);
+
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    return classLoader.getResourceAsStream(sb.toString());
+}
+```
+
+```java
+BufferedReader reader = openTenantDdlFiles(ddl)
+reader.read();
+```
 
