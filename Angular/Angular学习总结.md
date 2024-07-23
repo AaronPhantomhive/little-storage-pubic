@@ -14,25 +14,101 @@ ag-grid网格框架：https://www.ag-grid.com/angular-data-grid/
 
 Angular CLI 工具包 + Node.js（类似java的JDK）
 
-安装angular CLI: `npm i @angular/cli -g` (-g为全局，加版本的话后面+@x.x←版本号，安装后可使用ng指令)
-**优先使用命令创建，使用scss。**
+安装angular CLI: npm install -g @angular/cli (加版本的话后面+@x.x←版本号)
 
 查看版本：ng --version
 
 help: ng help
 
-创建：ng new xxxx
+创建：ng new angular-start
 
 serve: ng serve
 
-加入material
-ng add @angular/material
+prettier: npm install prettier prettier-eslint eslint-config-prettier eslint-plugin-prettier --save-dev
 
-**P.S.**
-`无法加载文件 ...\npm\ng.ps1，因为在此系统上禁止运行脚本。`
-PowerShell 执行策略禁止了运行未签名的脚本:
-- 以管理员身份运行PowerShell。
-- 输入set-executionpolicy remotesigned，选择Y。
+- 把以下加入package.json的scripts，然后run，进行全局格式化
+
+  ```json
+  "prettier:write": "prettier --write ."
+  ```
+
+- 常用prettier配置
+
+  ```json
+  {
+    "printWidth": 120,
+    "useTabs": false,
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "quoteProps": "as-needed",
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "arrowParens": "always",
+    "endOfLine": "crlf",
+    "overrides": [
+      {
+        "files": "**/*.html",
+        "options": {
+          "trailingComma": "none"
+        }
+      }
+    ]
+  }
+  ```
+
+- .prettierignore
+
+  ```
+  **/node_modules/**
+  *.js
+  *.d.ts
+  *.json
+  
+  # See http://help.github.com/ignore-files/ for more about ignoring files.
+  
+  # Compiled output
+  /dist
+  /tmp
+  /out-tsc
+  /bazel-out
+  
+  # Node
+  /node_modules
+  npm-debug.log
+  yarn-error.log
+  
+  # IDEs and editors
+  .idea/
+  .project
+  .classpath
+  .c9/
+  *.launch
+  .settings/
+  *.sublime-workspace
+  
+  # Visual Studio Code
+  .vscode/*
+  !.vscode/settings.json
+  !.vscode/tasks.json
+  !.vscode/launch.json
+  !.vscode/extensions.json
+  .history/*
+  
+  # Miscellaneous
+  /.angular/cache
+  .sass-cache/
+  /connect.lock
+  /coverage
+  /libpeerconnection.log
+  testem.log
+  /typings
+  
+  # System files
+  .DS_Store
+  Thumbs.db
+  ```
 
 ### 查看工程
 
@@ -50,54 +126,42 @@ PowerShell 执行策略禁止了运行未签名的脚本:
 
 **package-lock.json** 版本
 
-**.gitignore git** 不被git检测到的文件配置
-
-### 使用ESLint和Prettier配置Angular项目
-
-ESLint:
-
-```
-ng add @angular-eslint/schematics
-```
-
-Prettier:
-
-```
-npm install prettier --save-dev
-```
-
-之后创建一个 `.prettierrc.json` 文件并写入一些常见的配置。
-
-再创建`prettierignore` 文件，把 `gitignore` 文件的内容复制过去。
-
-**将ESLint和Prettier结合**
-
-```text
-npm install --save-dev eslint-config-prettier
-npm install --save-dev eslint-plugin-prettier 
-```
-
-之后把 `plugin:prettier/recommended` 添加在 `.eslintrc.json` 中 extends 数组的最后。
-
-```text
-{
-  "extends": ["plugin:prettier/recommended"]
-}
-```
-
-再运行 `ng lint --fix` ，Prettier 的规则也会被执行并且自动 fix。
-
-参考：https://zhuanlan.zhihu.com/p/472919853
+**.gitignore** 不被git检测到的文件配置
 
 ### 启动服务
 
 package.json 文件里：
 
-start为启动 ng server --port 4300 ← 任意端口
+start为启动 ng server --port 4300（此为默认端口） ← 任意端口
 
 devDependences 开发版本 npm -i xxx --save-dev
 
 dependences 运行版本
+
+### 将css样式迁移到scss
+
+在angular.json里加入以下
+
+```json
+"schematics": {
+  "@schematics/angular:component": {
+    "style": "scss"
+  },
+  "@schematics/angular:application": {
+    "strict": true
+  }
+},
+```
+
+并将styles的css改成scss（2个）
+
+```json
+"styles": [
+  "src/styles.scss"
+],
+```
+
+最后全局替换，rename，重新编译。
 
 ## 开发
 
@@ -138,16 +202,12 @@ router：路由
 pipe：管道
 
 - 对字符串做一些特定的处理，一般用来改变内容的格式
-- 给数据增加表现形式
-- （差值表达式）{{xxx|json}} {{xxx|async}} 自带管道，转json和等待。
 
 directive：指令
 
 - 改属性，扩容
-- 增加共通功能
 
 service：服务
-- 数据处理，前后台交互，数据清理
 
 ### 引入模块和服务（module.ts 文件）
 
@@ -165,11 +225,17 @@ service：服务
 
 为配置路径，设置页面跳转用。
 
-loadChildren then 为惰性加载，预加载。
+为惰性加载，预加载。
 
 `Router=[{ path: 'xxx', component: xxx, children[{}] }];`
 
 两种方式：隐式路由，路由跳转。隐式路由为不管怎么切换，url都保持不变。
+
+### 隐式路由
+
+```html
+[skipLocationChange]="true"
+```
 
 ### 异步路由
 
@@ -232,7 +298,7 @@ OnDestroy：指令销毁前调用。
 
 `[( )]` 双向绑定 
 
-`{{ }}` 差值表达式。把变值/逻辑显示出来
+`{{ }}` 差值表达式
 
 双向绑定含指令: `<input [(ngModel)]="inputStr" type... >`  
 
@@ -326,7 +392,7 @@ this.xxxx = this.preparationService.xxx;
 
 BehaviorSubject存储着最后发出给obsever的值。
 
-例子：
+例子1：
 
 ```typescript
 var subject = new Rx.BehaviorSubject(0);
@@ -354,6 +420,282 @@ observerA: 2
 observerB: 2
 observerA: 3
 observerB: 3
+```
+
+例子2：消息图标上的动态消息提示。
+
+图标文件.html里：
+
+```html
+<mat-icon
+  [matBadge]="unreadNoticeCount"
+  [matBadgeHidden]="!unreadNoticeCount"
+  matBadgeSize="small"
+  svgIcon="notify"
+></mat-icon>
+```
+
+main.service.ts里：
+
+```typescript
+unreadNoticeCount = new BehaviorSubject<number>(0);
+
+notices = [
+  { title: '111', description: '222', content: '333', status: 0 },
+  { title: '444', description: '555', content: '666', status: 0 },
+  { title: '777', description: '888', content: '999', status: 0 },
+  { title: '123', description: '456', content: '789', status: 0 },
+];
+
+constructor() {
+  const unreadNoticeCount = this.notices.reduce((count, curr) => {
+    if (curr.status === 0) {
+      count++;
+    }
+    return count;
+  }, 0);
+  this.unreadNoticeCount.next(unreadNoticeCount);
+}
+```
+
+图标文件.ts里：
+
+```typescript
+constructor(
+  private mainService: MainService,
+) {
+  this.mainService.unreadNoticeCount.subscribe((count) => {
+    this.unreadNoticeCount = count;
+  });
+}
+```
+
+NotificationComponent.ts里：
+
+```typescript
+unreadNoticeCount = 0;
+
+constructor(private mainService: MainService) {
+  this.mainService.unreadNoticeCount.subscribe((count) => {
+    this.unreadNoticeCount = count;
+  });
+}
+
+ngAfterViewInit(): void {
+  this.notices = this.mainService.notices;
+}
+
+setStatus(index: number) {
+  if (this.notices[index].status === 0) {
+    this.readNotice();
+    this.notices[index].status = 1;
+  }
+}
+
+readNotice() {
+  this.mainService.unreadNoticeCount.next(--this.unreadNoticeCount);
+}
+```
+
+### 表单FormGroup
+
+eg：check password
+
+最外层建formGroup
+
+```html
+<div [formGroup]="form">
+</div>
+```
+
+同时ts里
+
+```typescript
+form: FormGroup = new FormGroup(
+  {
+    oldPasswordFormControl: new FormControl('', Validators.required),
+    newPasswordFormControl: new FormControl('', Validators.required),
+    confirmPasswordFormControl: new FormControl('', Validators.required),
+  },
+  this.mustMatch('newPasswordFormControl', 'confirmPasswordFormControl'),
+);
+```
+
+html里，input赋上`formControlName`
+
+```html
+<input
+  [type]="oldPasswordHide ? 'password' : 'text'"
+  matInput
+  formControlName="oldPasswordFormControl"
+/>
+```
+
+password.html部分代码：
+
+```html
+<mat-form-field class="input-field lower" appearance="outline">
+  <input
+    [type]="oldPasswordHide ? 'password' : 'text'"
+    matInput
+    formControlName="oldPasswordFormControl"
+    maxlength="30"
+    placeholder="{{ 'main.changePassword.oldPassword' | translate }}"
+    class="input-label"
+  />
+  <button mat-icon-button matSuffix matTooltip="visibility" (click)="oldPasswordHide = !oldPasswordHide">
+    <mat-icon [svgIcon]="oldPasswordHide ? 'visibility-off' : 'visibility'"></mat-icon>
+  </button>
+  <!-- エラーメッセージ -->
+  <mat-error *ngIf="form.get('oldPasswordFormControl')?.errors?.['required']">
+    {{ 'main.changePassword.required' | translate }}
+  </mat-error>
+</mat-form-field>
+<mat-form-field class="input-field lower" appearance="outline">
+  <input
+    [type]="newPasswordHide ? 'password' : 'text'"
+    matInput
+    formControlName="newPasswordFormControl"
+    maxlength="30"
+    placeholder="{{ 'main.changePassword.newPassword' | translate }}"
+    class="input-label"
+  />
+  <button mat-icon-button matSuffix matTooltip="visibility" (click)="newPasswordHide = !newPasswordHide">
+    <mat-icon [svgIcon]="newPasswordHide ? 'visibility-off' : 'visibility'"></mat-icon>
+  </button>
+  <!-- エラーメッセージ -->
+  <mat-error *ngIf="form.get('newPasswordFormControl')?.errors?.['required']">
+    {{ 'main.changePassword.required' | translate }}
+  </mat-error>
+</mat-form-field>
+<mat-form-field class="input-field lower" appearance="outline">
+  <input
+    [type]="confirmPasswordHide ? 'password' : 'text'"
+    matInput
+    formControlName="confirmPasswordFormControl"
+    maxlength="30"
+    placeholder="{{ 'main.changePassword.confirmPassword' | translate }}"
+    class="input-label"
+  />
+  <button mat-icon-button matSuffix matTooltip="visibility" (click)="confirmPasswordHide = !confirmPasswordHide">
+    <mat-icon [svgIcon]="confirmPasswordHide ? 'visibility-off' : 'visibility'"></mat-icon>
+  </button>
+  <!-- エラーメッセージ -->
+  <mat-error *ngIf="form.get('confirmPasswordFormControl')?.errors?.['required']">
+    {{ 'main.changePassword.required' | translate }}
+  </mat-error>
+  <mat-error *ngIf="form.get('confirmPasswordFormControl')?.errors?.['mustMatch']">
+    {{ 'main.changePassword.notSame' | translate }}
+  </mat-error>
+</mat-form-field>
+<!-- 保存ボタン -->
+<button mat-flat-button [disabled]="getFormValidationErrors()" class="change-pass-button" (click)="changePassword()">
+  {{ 'common.button.save' | translate }}
+</button>
+```
+
+password.ts部分代码：
+
+```typescript
+/**
+ * 新しいパスワードと新しいパスワード（確認）を一致する必要があります。
+ * @param newPasswordFormControl 新しいパスワードのフォームコントロール
+ * @param confirmPasswordFormControl 新しいパスワード（確認）のフォームコントロール
+ */
+mustMatch(newPasswordFormControl: string, confirmPasswordFormControl: string) {
+  return (formGroup: AbstractControl) => {
+    const newControl = formGroup.get(newPasswordFormControl);
+    const confirmControl = formGroup.get(confirmPasswordFormControl);
+    if (confirmControl?.errors && !confirmControl.errors['mustMatch']) {
+      return null;
+    }
+    if (newControl?.value !== confirmControl?.value) {
+      confirmControl?.setErrors({ mustMatch: true });
+    } else {
+      confirmControl?.setErrors(null);
+    }
+    return null;
+  };
+}
+
+/**
+ * フォーム検証エラーを取得します。
+ */
+getFormValidationErrors() {
+  // TODO 複数回実行
+  let errorsCheck = false;
+  Object.keys(this.form.controls).forEach((key) => {
+    const controlErrors: ValidationErrors | null | undefined = this.form.get(key)?.errors;
+    if (controlErrors != null) {
+      Object.keys(controlErrors).forEach((keyError) => {
+        errorsCheck = errorsCheck || controlErrors[keyError];
+      });
+    }
+  });
+  return errorsCheck;
+}
+```
+
+### isObjectValueEqual
+
+```typescript
+/**
+ * isObjectValueEqual
+ * @param obj
+ * @param copyObj
+ */
+isObjectValueEqual(obj: any, copyObj: any) {
+  const objKeys = Object.getOwnPropertyNames(obj);
+  const copyObjKeys = Object.getOwnPropertyNames(copyObj);
+  if (objKeys.length !== copyObjKeys.length) {
+    return false;
+  }
+  for (let index = 0; index < objKeys.length; index++) {
+    const key = objKeys[index];
+    if (typeof obj[key] === 'object' && obj[key].length) {
+      if (!this.isObjectValueEqual(obj[key], copyObj[key])) {
+        return false;
+      }
+    } else {
+      if (obj[key] !== copyObj[key]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+```
+
+后用第三方包：
+
+```typescript
+import { cloneDeep, isEqual, merge } from 'lodash';
+```
+
+```typescript
+/**
+ * データのデイープコピー
+ *
+ * @param data データ
+ * @returns コピー結果
+ */
+const deepCopy = (data: any): any => cloneDeep(data);
+/**
+ * データのデイープ比較
+ *
+ * @param data1 データ1
+ * @param data2 データ2
+ * @returns 比較結果
+ */
+const deepEqual = (data1: any, data2: any): boolean => isEqual(data1, data2);
+/**
+ * データのデイープマージ
+ *
+ * @param data1 データ1
+ * @param data2 データ2
+ * @returns マージ結果
+ */
+const deepMerge = (data1: any, data2: any): any => merge(data1, data2);
 ```
 
 ### Reload
@@ -386,6 +728,20 @@ fun() {
 
 HttpInterceptor
 
+### app-routing.module.ts
+
+`onSameUrlNavigation: 'reload'` 禁用缓存
+
+```tsx
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes, { preloadingStrategy: PreloadAllModules, onSameUrlNavigation: 'reload' })],
+  exports: [RouterModule],
+  providers: [AuthService],
+})
+```
+
+
+
 ## AG-Grid
 
 ### 常用属性例子
@@ -394,21 +750,100 @@ HttpInterceptor
 <ag-grid-angular
   class="ag-grid"
   #tableItemGrid
-  [gridOptions]="gridOptions"
+
+  [gridOptions]="gridOptions"							  	← 基础
   [columnDefs]="columnDefs"
   [rowData]="rowData"
-  [components]="components"
-  [singleClickEdit]="true"
+  [components]="components"									← 使用组件
+
+  [singleClickEdit]="true"									← 单击编辑
   [stopEditingWhenCellsLoseFocus]="true"
-  [suppressRowClickSelection]="true"
+
+  rowSelection="multiple"									← 不设置此参数，则row不能被单击选中
+  [suppressRowClickSelection]="true"						← 同上一个参数，但此参数多用于checkbox的点击
+  suppressContextMenu="true"								← 屏蔽右键菜单
+
+  [enableCellTextSelection]="true"							← 单元格文字可以高亮选择复制
+
+  [pagination]="true"										← 自定义分页
+  [paginationPageSize]="10"
+                 
+  [headerHeight]="0"										← 隐藏表头
+
   (selectionChanged)="onSelectionChange()"
   (gridSizeChanged)="onGridSizeChanged()"
   (rowSelected)="onRowSelected($event)"
   (rowDataChanged)="onRowDataChanged()"
   (sortChanged)="onSortChanged()"
-  rowSelection="multiple"
 >
 </ag-grid-angular>
+```
+
+常用表格写法例子
+
+```typescript
+dataSourceColumnDefs: ColDef[] = [];
+
+ngOnInit(): void {
+  this.columnDefs();
+}
+
+xxxAction = (params: EditableCallbackParams) => {
+  // do something...
+};
+
+// 第一组为原生的，后两组为自己写的组件的
+private columnDefs() {
+  this.dataColumnDefs.push(
+    {
+	  headerName: 'checkBoxRegular',
+	  colId: 'checkbox',
+	  headerCheckboxSelection: false,
+	  headerCheckboxSelectionFilteredOnly: true,
+	  checkboxSelection: true,
+	  width: 80,
+	  minWidth: 80,
+	  maxWidth: 80,
+	  headerClass: 'checkBoxRegular',
+	  suppressMovable: true,
+	  resizable: false,
+	  sortable: false,
+	  suppressMenu: true,
+      cellStyle: 'text-align': 'center',
+	},
+    {
+      field: 'checkbox',
+      headerName: 'checkbox',
+      width: 100,
+      minWidth: 50,
+      cellStyle: 'text-align': 'center',
+      cellRenderer: 'checkboxCellRenderer',
+      cellRendererParams: { 
+        action: this.xxxAction,
+        color: 'Green'
+   	  },
+      getQuickFilterText: () => '', // 文本框过滤器
+    },
+    {
+      field: 'input',
+      headerName: 'input',
+      width: 100,
+      minWidth: 50,
+      cellStyle: 'text-align': 'center',
+      editable: true,
+      cellEditor: 'inputCellRenderer',
+    },
+  );
+    
+  // GridInputComponent和GridCheckboxComponent为另写的组件
+  this.components = {
+    inputCellRenderer: GridInputComponent,
+    checkboxCellRenderer: GridCheckboxComponent,
+  };
+  
+  // service 里为共通的一些方法
+  this.gridService.setColDef(this.dataSourceGridOptions, true, true, false);
+}
 ```
 
 文本框过滤器属性
@@ -417,15 +852,71 @@ HttpInterceptor
 getQuickFilterText: () => '',
 ```
 
+grid.service.ts里（为共通的一些方法）
+
+```typescript
+// 设置表格的一些属性，例如sortable为true为支持排序，resizable为重置表格宽度，filter为false为不支持过滤列
+setColDef(options: GridOptions, resizable: boolean, sortable: boolean, filter: boolean): void {
+  options.defaultColDef = { ...options.defaultColDef, resizable: resizable, sortable: sortable, filter: filter };
+  options.animateRows = true;
+}
+```
+
 ### gridOptions
 
 `gridOptions` 里为表格的详细信息。
 
+eg：
+
+```json
+api: GridApi {detailGridInfoMap: {…}, destroyCalled: false, immutableService: ImmutableService, csvCreator: null, excelCreator: null, …}
+columnApi: ColumnApi {columnModel: ColumnModel}
+columnDefs: (8) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+components: {selectCellRenderer: ƒ, inputCellRenderer: ƒ, checkboxCellRenderer: ƒ}
+defaultColDef: {resizable: true, sortable: true, filter: false, headerValueGetter: ƒ}
+localeTextFunc: (key, defaultValue) => {…}
+overlayLoadingTemplate: "<span></span>"
+overlayNoRowsTemplate: "<span></span>"
+rowData: (2) [{…}, {…}]
+singleClickEdit: true
+stopEditingWhenCellsLoseFocus: true
+suppressMovableColumns: true
+suppressRowClickSelection: true
+```
+
 `gridOptions.columnDefs` 里是列的定义的数据。
+
+eg：
+
+```json
+cellRenderer: "selectCellRenderer"
+cellRendererParams: {$options: BehaviorSubject, filter: true, emptyOption: true, disabled: false}
+cellStyle: {text-align: 'center'}
+field: "inputItem"
+headerName: "main.preparation.dataPipLine.label.referItem"
+minWidth: 50
+width: 180
+```
 
 `gridOptions.components` 里是引用的所有自定义组件。
 
 `gridOptions.api?.getColumnDefs());` 或 `gridOptions.columnApi?.getColumnState());` 可以get到状态，同时也有set方法，resetColumnState方法。
+
+eg：
+
+```typescript
+this.gridOptions.columnApi?.getColumnState().forEach((col) => {
+  console.log('col', col);
+});
+```
+
+eg：
+
+```json
+checkboxCellRenderer: class GridCheckboxComponent
+inputCellRenderer: class GridInputComponent
+selectCellRenderer: class GridDropdownComponent
+```
 
 `gridOptions.rowData` 里是所有行的数据，为一个array。
 
@@ -443,8 +934,66 @@ getQuickFilterText: () => '',
 
 换句话说，组件实例化`agInit()`和销毁总是只调用一次。除非组件首先被销毁，否则组件的 GUI 通常会被渲染一次。`refresh()`可以选择多次调用。
 
-### ts语法
-类型extends 可以用&
-eg：
-type a = {...}
-type b = a & {...}
+例子：
+
+```typescript
+private params!: ICellRendererParams | any;
+
+agInit(params: any): void {
+  this.params = params;
+  this.value = this.params.value;
+}
+
+refresh(params: ICellRendererParams): boolean {
+  return true;
+}
+```
+
+#### 例子：checkbox カラムの単一選択制御
+
+先把选中的都选掉，然后选择的赋值，实现单一选择。
+
+```typescript
+private params!: ICellRendererParams | any;
+private selection: 'multiple' | 'single' = 'multiple';
+private refreshRow: boolean = false;
+
+agInit(params: ICellRendererParams | any): void {
+  this.params = params;
+  this.selection = this.params.selection;
+
+  this.refreshRow = !!this.params.columnApi
+    .getAllColumns()
+    .find((column: any) => column.getUserProvidedColDef()?.cellRendererParams?.controlFun);
+}
+
+onChange() {
+  const field = this.params.colDef.field;
+  // カラムの単一選択制御
+  this.selectionControl(field);
+  
+  // 赋值
+  this.params.node.setDataValue(field, this.value);
+  // refresh row
+  if (this.refreshRow) {
+    this.params.api.redrawRows({ rowNodes: [this.params.node] });
+  }
+}
+
+/**
+ * カラムの単一選択制御
+ *
+ * @param field カラムのフィールド
+ */
+private selectionControl(field: string) {
+  if (this.params.selection === 'single') {
+    this.params.api.gridOptionsWrapper.gridOptions.api.forEachNode((col: any) => {
+      if (col.data[field]) {
+        col.setDataValue(field, false);
+        this.params.api.redrawRows({ rowNodes: [col] });
+      }
+    });
+  }
+}
+```
+
