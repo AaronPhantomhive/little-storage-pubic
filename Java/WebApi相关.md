@@ -8,6 +8,10 @@ https://eclipse-ee4j.github.io/jersey.github.io/documentation/latest/index.html
 
 ### 注解
 
+`@DefaultValue("")`
+
+写在bean的变量上，default value
+
 `@Path`
 
 相对 URI 路径
